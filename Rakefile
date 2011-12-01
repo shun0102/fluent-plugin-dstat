@@ -16,10 +16,8 @@ Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "fluent-plugin-dstat"
   gem.homepage = "http://github.com/shun0102/fluent-plugin-dstat"
-  gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
-  gem.email = "mikami@hpcs.cs.tsukuba.ac.jp"
+  gem.summary = "Dstat Input plugin for Fluent event collector"
+  gem.email = "shun0102@gmail.com"
   gem.authors = ["Shunsuke Mikami"]
   # dependencies defined in Gemfile
 end
