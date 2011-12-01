@@ -1,5 +1,4 @@
-require 'fluent/test'
-require 'net/http'
+require 'helper'
 
 class DstatInputTest < Test::Unit::TestCase
   def setup
