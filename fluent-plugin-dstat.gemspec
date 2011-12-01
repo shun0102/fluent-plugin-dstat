@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION",
+    "fluent-plugin-dstat.gemspec",
     "lib/fluent-plugin-dstat.rb",
     "test/helper.rb",
     "test/plugin/test_in_dstat.rb"
@@ -30,7 +31,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/shun0102/fluent-plugin-dstat"
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.10"
-  s.summary = "dstat Input plugin for Fluent event collector"
+  s.summary = "Dstat Input plugin for Fluent event collector"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
