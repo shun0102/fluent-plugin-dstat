@@ -46,3 +46,7 @@ pkg
 
 # For rubinius:
 #*.rbc
+
+# not to lock gems version, and for bundler
+Gemfile.lock
+vendor
