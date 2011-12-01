@@ -12,5 +12,5 @@ group :development do
   gem "rcov", ">= 0"
 end
 
-gem "fluentd"
+gem "fluentd", "~> 0.10.7"
 gem "rdoc"
