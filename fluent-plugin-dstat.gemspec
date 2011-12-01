@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "fluent-plugin-dstat.gemspec",
+    "lib/fluent/plugin/in_dstat.rb",
     "test/helper.rb",
     "test/plugin/test_in_dstat.rb"
   ]
