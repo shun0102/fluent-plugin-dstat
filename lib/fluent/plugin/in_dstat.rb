@@ -9,6 +9,7 @@ class DstatInput < Input
     @hostname = `hostname -s`.chomp!
     @line_number = 0
     @first_keys = []
+    @second_keys = []
   end
 
   config_param :tag, :string
@@ -48,21 +49,29 @@ class DstatInput < Input
       when 0
         @first_keys = line.split(" ").map {|i| i.gsub(/^-+|-+$/, "") }
       when 1
-        @second_keys = Array.new( @first_keys.length, nil)
-        line.split(/[:\|]/).each_with_index do |i, index|
-          keys = i.split(" ")
-          @second_keys[index] = keys
-        end
+        @second_keys = line.split(/[:\|]/)
       else
         hash = Hash.new()
-        line.split(/[:\|]/).each_with_index do |i, index|
-          keys = i.split(" ")
+        values = line.split(/[:\|]/)
+
+        @first_keys.each_with_index do |i, index|
           value_hash = Hash.new()
-          @second_keys[index].each_with_index do |j, second_index|
-            value_hash[j] = keys[second_index]
+          if /^most/ =~ i
+            s_key = @second_keys[index].gsub(/^\s+|\s+$/, "")
+            value_hash[s_key] = values[index]
+          else
+            second_values = values[index].split(" ")
+            @second_keys[index].split(" ").each_with_index do |j, second_index|
+              value_hash[j] = second_values[second_index]
+            end
           end
-          hash[@first_keys[index]] = value_hash
+          if hash[@first_keys[index]].nil?
+            hash[@first_keys[index]] = value_hash
+          else
+            hash[@first_keys[index]] = hash[@first_keys[index]].merge(value_hash)
+          end
         end
+
         record = {
           'hostname' => @hostname,
           'dstat' => hash
