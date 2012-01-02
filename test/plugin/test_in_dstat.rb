@@ -7,7 +7,8 @@ class DstatInputTest < Test::Unit::TestCase
 
   CONFIG = %[
     tag dstat
-    option -fcdnm 1
+    option -fcdnm
+    delay 1
   ]
 
   def create_driver(conf=CONFIG)
@@ -16,7 +17,8 @@ class DstatInputTest < Test::Unit::TestCase
 
   def test_configure
     d = create_driver
-    assert_equal "-fcdnm 1", d.instance.option
+    assert_equal "-fcdnm", d.instance.option
+    assert_equal 1, d.instance.delay
   end
 
   def test_emit
@@ -26,7 +28,11 @@ class DstatInputTest < Test::Unit::TestCase
       sleep 2
     end
 
+    length = `dstat #{d.instance.option} #{d.instance.delay} 1`.split("\n")[0].split("\s").length
     emits = d.emits
     assert_equal true, emits.length > 0
+    puts emits[0][2]['dstat']
+    assert_equal length, emits[0][2]['dstat'].length
   end
+
 end

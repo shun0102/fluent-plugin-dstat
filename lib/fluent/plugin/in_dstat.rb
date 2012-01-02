@@ -13,11 +13,12 @@ class DstatInput < Input
   end
 
   config_param :tag, :string
-  config_param :option, :string, :default => "-fcdnm 1"
+  config_param :option, :string, :default => "-fcdnm"
+  config_param :delay, :integer, :default => 1
 
   def configure(conf)
     super
-    @command = "dstat #{@option}"
+    @command = "dstat #{@option} #{@delay}"
   end
 
   def start
