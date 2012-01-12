@@ -1,7 +1,23 @@
 module Fluent
 
-
 class DstatInput < Input
+
+  def split_second_key(str)
+    result = []
+    while (str)
+      index = /[^ ] / =~ str
+      if index
+        result << str[0..index]
+      else
+        result << str unless str == " "
+	return result
+      end
+      str = str[(index + 1)..-1]
+    end
+
+    return result
+  end
+
   Plugin.register_input('dstat', self)
 
   def initialize
@@ -48,28 +64,47 @@ class DstatInput < Input
 
       case @line_number
       when 0
-        @first_keys = line.split(" ").map {|i| i.gsub(/^-+|-+$/, "") }
+        @first_keys = line.split(" ")
       when 1
-        @second_keys = line.split(/[:\|]/)
+        index = 0
+        @first_keys.each do |i|
+          @second_keys << line[index..(index + i.length - 1)]
+          index += i.length + 1
+        end
       else
         hash = Hash.new()
-        values = line.split(/[:\|]/)
+        values = []
+        index = 0
+        @first_keys.each do |i|
+          values << line[index..(index + i.length - 1)]
+          index += i.length + 1
+        end
 
         @first_keys.each_with_index do |i, index|
           value_hash = Hash.new()
-          if /^most/ =~ i
+          first = i.gsub(/^-+|-+$/, "")
+          length = i.length
+
+          if first == "most-expensive"
             s_key = @second_keys[index].gsub(/^\s+|\s+$/, "")
             value_hash[s_key] = values[index]
           else
-            second_values = values[index].split(" ")
-            @second_keys[index].split(" ").each_with_index do |j, second_index|
-              value_hash[j] = second_values[second_index]
+            keys = split_second_key(@second_keys[index])
+            second_index = 0
+
+            keys.each do |i|
+              next_index = second_index + i.length - 1
+              value = values[index][second_index..next_index]
+              second_index += i.length + 1
+              value = value.gsub(/^\s+|\s+$/, "") if value
+              value_hash[i.gsub(/^\s+|\s+$/, "")] = value
             end
           end
-          if hash[@first_keys[index]].nil?
-            hash[@first_keys[index]] = value_hash
+
+          if hash[first].nil?
+            hash[first] = value_hash
           else
-            hash[@first_keys[index]] = hash[@first_keys[index]].merge(value_hash)
+            hash[first] = hash[first].merge(value_hash)
           end
         end
 

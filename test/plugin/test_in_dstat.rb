@@ -5,9 +5,17 @@ class DstatInputTest < Test::Unit::TestCase
     Fluent::Test.setup
   end
 
+  OPTIONS = ["aio", "cpu", "cpu24", "disk", 
+             "epoch", "fs", "int", "int24", "io", "ipc", "load", "lock",
+             "mem", "net", "page", "page24", "proc", "raw", "socket",
+             "swap", "swapold", "sys", "tcp", "udp", "unix", "vm",
+             "disk-tps", "disk-util", "dstat-cpu", "dstat-ctxt", "dstat-mem", "freespace",
+             "top-bio", "top-childwait", "top-cpu","top-io",
+             "top-mem", "top-oom", "utmp", "top-io -fc"]
+
   CONFIG = %[
     tag dstat
-    option -fcdnm
+    option --aio -cpu
     delay 1
   ]
 
@@ -17,22 +25,35 @@ class DstatInputTest < Test::Unit::TestCase
 
   def test_configure
     d = create_driver
-    assert_equal "-fcdnm", d.instance.option
     assert_equal 1, d.instance.delay
   end
 
   def test_emit
-    d = create_driver
+
+    OPTIONS.each do |op|
+      #emit_with_conf(CONFIG)
+      conf = "tag dstat\n option --#{op}\n delay 1"
+      emit_with_conf(conf)
+    end
+
+  end
+
+  def emit_with_conf(conf)
+    d = create_driver(conf)
 
     d.run do
       sleep 2
     end
 
     length = `dstat #{d.instance.option} #{d.instance.delay} 1`.split("\n")[0].split("\s").length
+
     emits = d.emits
     assert_equal true, emits.length > 0
-    puts emits[0][2]['dstat']
     assert_equal length, emits[0][2]['dstat'].length
+
+    puts "--- #{d.instance.option} ---"
+    puts emits[0][2]
+    puts "--- end ---"
   end
 
 end
