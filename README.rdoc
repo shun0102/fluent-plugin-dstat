@@ -13,10 +13,11 @@ This plugin use Dstat, so you need to install Dstat before using this plugin.
   <source>
     type dstat
     tag dstat
-    option -c 3
+    option -c
+    delay 3
   </source>
 
-* option:option for dstat command(default: -fcdnm 1)
+* option:option for dstat command(default: -fcdnm)
 
 == Output Format
 
