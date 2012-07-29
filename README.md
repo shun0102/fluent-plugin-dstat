@@ -17,22 +17,20 @@ This plugin use Dstat, so you need to install Dstat before using this plugin.
   option -c
   delay 3
  </source>
-``
+```
 
 * option:option for dstat command(default: -fcdnm)
 
 ## Output Format
 
-When you use option -c, you get structured output data like below.
+When you use option -a, you get structured output data like below.
 
   {
   "hostname":"tsukuba000",
-  "dstat":{"total-cpu-usage":{"usr":"0",
-                              "sys":"0",
-                              "idl":"100",
-                              "wai":"0",
-                              "hiq":"0",
-                              "siq":"0"}}
+   dstat":{"total cpu usage":"usr":"0.0","sys":"0.0","idl":"100.0","wai":"0.0","hiq":"0.0","siq":"0.0"},
+           "dsk/total":{"read":"0.0","writ":"0.0"},"net/total":{"recv":"148.0","send":"164.0"},
+           "paging":{"in":"0.0","out":"0.0"},
+           "system":{"int":"16.333","csw":"29.0"}}
   }
 
 ## Supported options
