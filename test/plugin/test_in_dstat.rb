@@ -9,9 +9,9 @@ class DstatInputTest < Test::Unit::TestCase
              "epoch", "fs", "int", "int24", "io", "ipc", "load", "lock",
              "mem", "net", "page", "page24", "proc", "raw", "socket",
              "swap", "swapold", "sys", "tcp", "udp", "unix", "vm",
-             "disk-tps", "disk-util", "dstat-cpu", "dstat-ctxt", "dstat-mem", "freespace",
-             "top-bio", "top-childwait", "top-cpu","top-io",
-             "top-mem", "top-oom", "utmp", "top-io -fc"]
+             "disk-util", "freespace",
+             "top-bio", "top-cpu","top-io",
+             "top-mem", "top-oom", "top-io -fc"]
 
   CONFIG = %[
     tag dstat
@@ -31,7 +31,6 @@ class DstatInputTest < Test::Unit::TestCase
   def test_emit
 
     OPTIONS.each do |op|
-      #emit_with_conf(CONFIG)
       conf = "tag dstat\n option --#{op}\n delay 1"
       emit_with_conf(conf)
     end
@@ -46,6 +45,7 @@ class DstatInputTest < Test::Unit::TestCase
     end
 
     length = `dstat #{d.instance.option} #{d.instance.delay} 1`.split("\n")[0].split("\s").length
+    puts `dstat #{d.instance.option} #{d.instance.delay} 3`
 
     emits = d.emits
     assert_equal true, emits.length > 0

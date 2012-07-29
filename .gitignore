@@ -52,3 +52,6 @@ Gemfile.lock
 vendor
 
 tmp
+
+*.conf
+*~

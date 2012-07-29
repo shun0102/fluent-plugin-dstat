@@ -35,7 +35,7 @@ When you use option -c, you get structured output data like below.
 
 == Supported options
 
-  aio, cpu, cpu24, disk, epoch, fs, int, int24, io, ipc, load, lock, mem, net, page, page24, proc, raw, socket, swap, swapold, sys, tcp, udp, unix, vm, disk-tps, disk-util, dstat-cpu, dstat-ctxt, dstat-mem, freespace, top-bio, top-childwait, top-cpu,top-io, top-mem, top-oom, utmp, top-io -fc
+  aio, cpu, cpu24, disk, epoch, fs, int, int24, io, ipc, load, lock, mem, net, page, page24, proc, raw, socket, swap, swapold, sys, tcp, udp, unix, vm, disk-util, freespace, top-bio, top-cpu,top-io, top-mem, top-oom, utmp, top-io -fc
 
 == Copyright
 
