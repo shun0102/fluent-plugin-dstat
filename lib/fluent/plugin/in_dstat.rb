@@ -13,6 +13,7 @@ class DstatInput < Input
     @second_keys = []
     @data_array = []
     @max_lines = 100
+    @last_time = Time.now
   end
 
   config_param :tag, :string
@@ -25,24 +26,27 @@ class DstatInput < Input
     @command = "dstat #{@option} --output #{@tmp_file} #{@delay}"
   end
 
+  def check_dstat
+    restart if (Time.now - @last_time) > @delay*3
+  end
+
   def start
-    if File.exist?(@tmp_file)
-      File.truncate(@tmp_file, 0)
-    else
-      `touch #{@tmp_file}`
-    end
+    touch_or_truncate(@tmp_file)
     @io = IO.popen(@command, "r")
     @pid = @io.pid
 
     @loop = Coolio::Loop.new
     @dw = DstatCSVWatcher.new(@tmp_file, &method(:receive_lines))
     @dw.attach(@loop)
+    @tw = TimerWatcher.new(1, true,  &method(:check_dstat))
+    @tw.attach(@loop)
     @thread = Thread.new(&method(:run))
   end
 
   def shutdown
     Process.kill(:TERM, @pid)
     @dw.detach
+    @tw.detach
     @loop.stop
     @thread.join
     File.delete(@tmp_file)
@@ -54,6 +58,29 @@ class DstatInput < Input
     rescue
       $log.error "unexpected error", :error=>$!.to_s
       $log.error_backtrace
+    end
+  end
+
+  def restart
+    Process.kill(:TERM, @pid)
+    @dw.detach
+    @tw.detach
+    @line_number = 0
+    touch_or_truncate(@tmp_file)
+
+    @io = IO.popen(@command, "r")
+    @pid = @io.pid
+    @dw = DstatCSVWatcher.new(@tmp_file, &method(:receive_lines))
+    @dw.attach(@loop)
+    @tw = TimerWatcher.new(1, true,  &method(:check_dstat))
+    @tw.attach(@loop)
+  end
+
+  def touch_or_truncate(file)
+    if File.exist?(file)
+      File.truncate(file, 0)
+    else
+      `touch #{file}`
     end
   end
 
@@ -101,6 +128,7 @@ class DstatInput < Input
       end
 
       @line_number += 1
+      @last_time = Time.now
     end
 
   end
@@ -125,6 +153,19 @@ class DstatInput < Input
         lines << line.chomp
       end
       @receive_lines.call(lines)
+    end
+  end
+  class TimerWatcher < Coolio::TimerWatcher
+    def initialize(interval, repeat, &check_dstat)
+      @check_dstat = check_dstat
+      super(interval, repeat)
+    end
+
+    def on_timer
+      @check_dstat.call
+    rescue
+      $log.error $!.to_s
+      $log.error_backtrace
     end
   end
 end
