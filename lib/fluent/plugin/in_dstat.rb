@@ -7,7 +7,7 @@ class DstatInput < Input
   def initialize
     super
     require 'csv'
-    @hostname = `hostname -s`.chomp!
+    @hostname = `hostname`.chomp!
     @line_number = 0
     @first_keys = []
     @second_keys = []
