@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "fluent-plugin-dstat"
-  s.version = "0.2.1"
+  s.version = "0.2.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Shunsuke Mikami"]
-  s.date = "2012-10-17"
+  s.date = "2012-11-18"
   s.email = "shun0102@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -25,7 +25,6 @@ Gem::Specification.new do |s|
     "VERSION",
     "fluent-plugin-dstat.gemspec",
     "lib/fluent/plugin/in_dstat.rb",
-    "nohup.out",
     "test/helper.rb",
     "test/plugin/test_in_dstat.rb"
   ]
