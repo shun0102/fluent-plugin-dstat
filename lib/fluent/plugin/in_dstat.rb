@@ -7,7 +7,6 @@ class DstatInput < Input
   def initialize
     super
     require 'csv'
-    @hostname = `hostname -s`.chomp!
     @line_number = 0
     @first_keys = []
     @second_keys = []
@@ -20,10 +19,12 @@ class DstatInput < Input
   config_param :option, :string, :default => "-fcdnm"
   config_param :delay, :integer, :default => 1
   config_param :tmp_file, :string, :default => "/tmp/dstat.csv"
+  config_param :hostname_command, :string, :default => "hostname"
 
   def configure(conf)
     super
     @command = "dstat #{@option} --output #{@tmp_file} #{@delay}"
+    @hostname = `#{@hostname_command}`.chomp!
   end
 
   def check_dstat
