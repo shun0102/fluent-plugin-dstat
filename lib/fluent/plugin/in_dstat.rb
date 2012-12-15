@@ -63,6 +63,7 @@ class DstatInput < Input
   end
 
   def restart
+    Process.detach(@pid)
     Process.kill(:TERM, @pid)
     @dw.detach
     @tw.detach
