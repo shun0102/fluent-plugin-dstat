@@ -1,7 +1,5 @@
 Dstat plugin for Fluent
 
-Description goes here.
-
 ## What's Dstat?
 
 Dstat is a versatile replacement for vmstat, iostat, netstat and ifstat.
@@ -19,7 +17,13 @@ This plugin use Dstat, so you need to install Dstat before using this plugin.
  </source>
 ```
 
-* option:option for dstat command(default: -fcdnm)
+#### Parameters
+
+* option
+  * option for dstat command (default: -fcdnm)
+
+* tag
+  * supported ${hostname} placeholder powered by [Fluent::Mixin::RewriteTagName](https://github.com/y-ken/fluent-mixin-rewrite-tag-name)
 
 ## Output Format
 
