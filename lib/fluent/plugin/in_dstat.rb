@@ -1,3 +1,5 @@
+require 'fluent/mixin/rewrite_tag_name'
+
 module Fluent
 
 class DstatInput < Input
@@ -20,6 +22,8 @@ class DstatInput < Input
   config_param :delay, :integer, :default => 1
   config_param :tmp_file, :string, :default => "/tmp/dstat.csv"
   config_param :hostname_command, :string, :default => "hostname"
+
+  include Fluent::Mixin::RewriteTagName
 
   def configure(conf)
     super
@@ -119,7 +123,9 @@ class DstatInput < Input
           'hostname' => @hostname,
           'dstat' => data
         }
-        Engine.emit(@tag, Engine.now, record)
+        emit_tag = @tag.dup
+        filter_record(emit_tag, Engine.now, record)
+        Engine.emit(emit_tag, Engine.now, record)
       end
 
       if (@line_number % @max_lines) == (@max_lines - 1)
