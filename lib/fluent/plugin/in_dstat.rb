@@ -16,6 +16,7 @@ class DstatInput < Input
   end
 
   config_param :tag, :string
+  config_param :dstat_path, :string, :default => "dstat"
   config_param :option, :string, :default => "-fcdnm"
   config_param :delay, :integer, :default => 1
   config_param :tmp_file, :string, :default => "/tmp/dstat.csv"
@@ -23,7 +24,7 @@ class DstatInput < Input
 
   def configure(conf)
     super
-    @command = "dstat #{@option} --output #{@tmp_file} #{@delay}"
+    @command = "#{@dstat_path} #{@option} --output #{@tmp_file} #{@delay}"
     @hostname = `#{@hostname_command}`.chomp!
   end
 
