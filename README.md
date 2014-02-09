@@ -1,4 +1,4 @@
-Dstat plugin for Fluent
+Dstat plugin for [Fluentd](http://fluentd.org)
 
 ## What's Dstat?
 
