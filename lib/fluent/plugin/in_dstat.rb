@@ -156,6 +156,8 @@ module Fluent
       end
 
       def on_change(prev, cur)
+        return if cur.size < @pos
+
         buffer = @io.read(cur.size - @pos)
         @pos = cur.size
         lines = []
