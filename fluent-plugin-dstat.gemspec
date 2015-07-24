@@ -41,14 +41,12 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<fluent-mixin-rewrite-tag-name>, [">= 0"])
       s.add_runtime_dependency(%q<fluentd>, ["~> 0.10.7"])
       s.add_runtime_dependency(%q<rdoc>, [">= 0"])
-      s.add_development_dependency(%q<shoulda>, [">= 0"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 2.0.1"])
     else
       s.add_dependency(%q<fluent-mixin-rewrite-tag-name>, [">= 0"])
       s.add_dependency(%q<fluentd>, ["~> 0.10.7"])
       s.add_dependency(%q<rdoc>, [">= 0"])
-      s.add_dependency(%q<shoulda>, [">= 0"])
       s.add_dependency(%q<bundler>, ["~> 1.0"])
       s.add_dependency(%q<jeweler>, ["~> 2.0.1"])
     end
@@ -56,7 +54,6 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<fluent-mixin-rewrite-tag-name>, [">= 0"])
     s.add_dependency(%q<fluentd>, ["~> 0.10.7"])
     s.add_dependency(%q<rdoc>, [">= 0"])
-    s.add_dependency(%q<shoulda>, [">= 0"])
     s.add_dependency(%q<bundler>, ["~> 1.0"])
     s.add_dependency(%q<jeweler>, ["~> 2.0.1"])
   end
