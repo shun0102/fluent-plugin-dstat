@@ -104,6 +104,8 @@ module Fluent
           @first_keys.each_with_index do |key, index|
             if key.nil? || key == ""
               @first_keys[index] = pre_key
+            else
+              @first_keys[index] = @first_keys[index].gsub(/\s/, '_')
             end
             pre_key = @first_keys[index]
           end
