@@ -127,7 +127,7 @@ module Fluent
           }
           emit_tag = @tag.dup
           filter_record(emit_tag, Engine.now, record)
-          Engine.emit(emit_tag, Engine.now, record)
+          router.emit(emit_tag, Engine.now, record)
         end
 
         if (@line_number % @max_lines) == (@max_lines - 1)
