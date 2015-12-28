@@ -17,11 +17,25 @@ module Fluent
       @last_time = Time.now
     end
 
+    # For fluentd v0.12.16 or earlier
+    class << self
+      unless method_defined?(:desc)
+        def desc(description)
+        end
+      end
+    end
+
+    desc "supported ${hostname} placeholder powered by Fluent::Mixin::RewriteTagName"
     config_param :tag, :string
+    desc "dstat command path"
     config_param :dstat_path, :string, :default => "dstat"
+    desc "dstat command line option"
     config_param :option, :string, :default => "-fcdnm"
+    desc "Run dstat command every `delay` seconds"
     config_param :delay, :integer, :default => 1
+    desc "Write dstat result to this file"
     config_param :tmp_file, :string, :default => "/tmp/dstat.csv"
+    desc "hostname command path"
     config_param :hostname_command, :string, :default => "hostname"
 
     include Fluent::Mixin::RewriteTagName
