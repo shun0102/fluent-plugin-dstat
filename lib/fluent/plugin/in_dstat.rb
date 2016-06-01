@@ -1,3 +1,4 @@
+require 'fluent/input'
 require 'fluent/mixin/rewrite_tag_name'
 
 module Fluent
