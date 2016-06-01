@@ -28,13 +28,17 @@ class DstatInputTest < Test::Unit::TestCase
     assert_equal 1, d.instance.delay
   end
 
-  def test_emit
-
+  data do
+    hash = {}
     OPTIONS.each do |op|
-      conf = "tag dstat\n option --#{op}\n delay 1"
-      emit_with_conf(conf)
+      hash[op] = op
     end
-
+    hash
+  end
+  def test_emit(data)
+    op = data
+    conf = "tag dstat\n option --#{op}\n delay 1"
+    emit_with_conf(conf)
   end
 
   def emit_with_conf(conf)
