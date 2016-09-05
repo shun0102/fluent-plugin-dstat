@@ -85,7 +85,12 @@ module Fluent
 
     def restart
       Process.detach(@pid)
-      Process.kill(:TERM, @pid)
+      begin
+        Process.kill(:TERM, @pid)
+      rescue Errno::ESRCH => e
+        $log.error "unexpected death of a child process", :error=>e.to_s
+        $log.error_backtrace
+      end
       @dw.detach
       @tw.detach
       @line_number = 0
