@@ -10,7 +10,7 @@ This plugin use Dstat, so you need to install Dstat before using this plugin.
 
 ```
 <source>
-  type dstat
+  @type dstat
   tag dstat
   option -c
   delay 3
