@@ -8,7 +8,6 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Shunsuke Mikami"]
-  s.date = "2015-08-15"
   s.email = "shun0102@gmail.com"
   s.license = "Apache-2.0"
   s.extra_rdoc_files = [
