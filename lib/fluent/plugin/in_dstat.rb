@@ -1,5 +1,4 @@
 require 'fluent/input'
-require 'fluent/mixin/rewrite_tag_name'
 
 module Fluent
   class DstatInput < Input
@@ -26,7 +25,7 @@ module Fluent
       end
     end
 
-    desc "supported ${hostname} placeholder powered by Fluent::Mixin::RewriteTagName"
+    desc "the tag of event"
     config_param :tag, :string
     desc "dstat command path"
     config_param :dstat_path, :string, :default => "dstat"
@@ -38,8 +37,6 @@ module Fluent
     config_param :tmp_file, :string, :default => "/tmp/dstat.csv"
     desc "hostname command path"
     config_param :hostname_command, :string, :default => "hostname"
-
-    include Fluent::Mixin::RewriteTagName
 
     def configure(conf)
       super
@@ -153,9 +150,7 @@ module Fluent
             'hostname' => @hostname,
             'dstat' => data
           }
-          emit_tag = @tag.dup
-          filter_record(emit_tag, Engine.now, record)
-          router.emit(emit_tag, Engine.now, record)
+          router.emit(@tag, Engine.now, record)
         end
 
         if (@line_number % @max_lines) == (@max_lines - 1)
