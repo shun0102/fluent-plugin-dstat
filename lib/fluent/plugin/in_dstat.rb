@@ -46,6 +46,12 @@ module Fluent
 
       @command = "#{@dstat_path} #{@option} --output #{@tmp_file} #{@delay}"
       @hostname = `#{@hostname_command}`.chomp!
+
+      begin
+        `#{@dstat_path} --version`
+      rescue Errno::ENOENT
+        raise ConfigError, "'#{@dstat_path}' command not found. Install dstat before run fluentd"
+      end
     end
 
     def check_dstat
