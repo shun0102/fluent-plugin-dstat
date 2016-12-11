@@ -8,7 +8,6 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Shunsuke Mikami"]
-  s.date = "2015-08-15"
   s.email = "shun0102@gmail.com"
   s.license = "Apache-2.0"
   s.extra_rdoc_files = [
@@ -36,20 +35,17 @@ Gem::Specification.new do |s|
     s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<fluent-mixin-rewrite-tag-name>, [">= 0"])
       s.add_runtime_dependency(%q<fluentd>, [">= 0.10.7", "< 2"])
       s.add_runtime_dependency(%q<rdoc>, [">= 0"])
       s.add_development_dependency(%q<test-unit>, [">= 3.0.0"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0"])
     else
-      s.add_runtime_dependency(%q<fluent-mixin-rewrite-tag-name>, [">= 0"])
       s.add_runtime_dependency(%q<fluentd>, [">= 0.10.7", "< 2"])
       s.add_runtime_dependency(%q<rdoc>, [">= 0"])
       s.add_dependency(%q<test-unit>, [">= 3.0.0"])
       s.add_dependency(%q<bundler>, ["~> 1.0"])
     end
   else
-    s.add_runtime_dependency(%q<fluent-mixin-rewrite-tag-name>, [">= 0"])
     s.add_runtime_dependency(%q<fluentd>, [">= 0.10.7", "< 2"])
     s.add_runtime_dependency(%q<rdoc>, [">= 0"])
     s.add_dependency(%q<test-unit>, [">= 3.0.0"])

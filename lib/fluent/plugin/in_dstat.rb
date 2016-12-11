@@ -1,5 +1,4 @@
 require 'fluent/input'
-require 'fluent/mixin/rewrite_tag_name'
 
 module Fluent
   class DstatInput < Input
@@ -26,7 +25,7 @@ module Fluent
       end
     end
 
-    desc "supported ${hostname} placeholder powered by Fluent::Mixin::RewriteTagName"
+    desc "the tag of event"
     config_param :tag, :string
     desc "dstat command path"
     config_param :dstat_path, :string, :default => "dstat"
@@ -39,13 +38,17 @@ module Fluent
     desc "hostname command path"
     config_param :hostname_command, :string, :default => "hostname"
 
-    include Fluent::Mixin::RewriteTagName
-
     def configure(conf)
       super
 
       @command = "#{@dstat_path} #{@option} --output #{@tmp_file} #{@delay}"
       @hostname = `#{@hostname_command}`.chomp!
+
+      begin
+        `#{@dstat_path} --version`
+      rescue Errno::ENOENT
+        raise ConfigError, "'#{@dstat_path}' command not found. Install dstat before run fluentd"
+      end
     end
 
     def check_dstat
@@ -147,9 +150,7 @@ module Fluent
             'hostname' => @hostname,
             'dstat' => data
           }
-          emit_tag = @tag.dup
-          filter_record(emit_tag, Engine.now, record)
-          router.emit(emit_tag, Engine.now, record)
+          router.emit(@tag, Engine.now, record)
         end
 
         if (@line_number % @max_lines) == (@max_lines - 1)

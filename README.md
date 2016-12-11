@@ -10,7 +10,7 @@ This plugin use Dstat, so you need to install Dstat before using this plugin.
 
 ```
 <source>
-  type dstat
+  @type dstat
   tag dstat
   option -c
   delay 3
@@ -23,19 +23,21 @@ This plugin use Dstat, so you need to install Dstat before using this plugin.
   * option for dstat command (default: -fcdnm)
 
 * tag
-  * supported ${hostname} placeholder powered by [Fluent::Mixin::RewriteTagName](https://github.com/y-ken/fluent-mixin-rewrite-tag-name)
+  * the tag of event. You can embed hostname by `#{}` feature, e.g. `tag "dstat.#{Socket.gethostname}"`.
 
 ## Output Format
 
 When you use option -a, you get structured output data like below.
 
-  {
+```
+{
   "hostname":"tsukuba000",
-   dstat":{"total cpu usage":"usr":"0.0","sys":"0.0","idl":"100.0","wai":"0.0","hiq":"0.0","siq":"0.0"},
+  "dstat":{"total cpu usage":"usr":"0.0","sys":"0.0","idl":"100.0","wai":"0.0","hiq":"0.0","siq":"0.0"},
            "dsk/total":{"read":"0.0","writ":"0.0"},"net/total":{"recv":"148.0","send":"164.0"},
            "paging":{"in":"0.0","out":"0.0"},
            "system":{"int":"16.333","csw":"29.0"}}
-  }
+}
+```
 
 ## Supported options
 
