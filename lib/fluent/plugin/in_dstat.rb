@@ -13,7 +13,6 @@ module Fluent
       @first_keys = []
       @second_keys = []
       @data_array = []
-      @max_lines = 100
       @last_time = Time.now
     end
 
@@ -34,14 +33,14 @@ module Fluent
     desc "Run dstat command every `delay` seconds"
     config_param :delay, :integer, :default => 1
     desc "Write dstat result to this file"
-    config_param :tmp_file, :string, :default => "/tmp/dstat.csv"
+    config_param :tmp_file, :string, :default => "/tmp/fluent-plugin-dstat.fifo"
     desc "hostname command path"
     config_param :hostname_command, :string, :default => "hostname"
 
     def configure(conf)
       super
 
-      @command = "#{@dstat_path} #{@option} --output #{@tmp_file} #{@delay}"
+      @command = "#{@dstat_path} #{@option} --nocolor --output #{@tmp_file} #{@delay} > /dev/null 2>&1"
       @hostname = `#{@hostname_command}`.chomp!
 
       begin
@@ -52,11 +51,15 @@ module Fluent
     end
 
     def check_dstat
-      restart if (Time.now - @last_time) > @delay*3
+      now = Time.now
+      if now - @last_time > @delay * 3
+        $log.info "Process dstat(#{@pid}) is stopped. Last updated: #{@last_time}"
+        restart
+      end
     end
 
     def start
-      touch_or_truncate(@tmp_file)
+      system("mkfifo #{@tmp_file}")
       @io = IO.popen(@command, "r")
       @pid = @io.pid
 
@@ -97,7 +100,6 @@ module Fluent
       @dw.detach
       @tw.detach
       @line_number = 0
-      touch_or_truncate(@tmp_file)
 
       @io = IO.popen(@command, "r")
       @pid = @io.pid
@@ -105,14 +107,6 @@ module Fluent
       @dw.attach(@loop)
       @tw = TimerWatcher.new(1, true,  &method(:check_dstat))
       @tw.attach(@loop)
-    end
-
-    def touch_or_truncate(file)
-      if File.exist?(file)
-        File.truncate(file, 0)
-      else
-        `touch #{file}`
-      end
     end
 
     def receive_lines(lines)
@@ -152,14 +146,6 @@ module Fluent
           }
           router.emit(@tag, Engine.now, record)
         end
-
-        if (@line_number % @max_lines) == (@max_lines - 1)
-          @dw.detach
-          File.truncate(@tmp_file, 0)
-          @dw = DstatCSVWatcher.new(@tmp_file, &method(:receive_lines))
-          @dw.attach(@loop)
-        end
-
         @line_number += 1
         @last_time = Time.now
       end
@@ -173,25 +159,24 @@ module Fluent
       def initialize(path, &receive_lines)
         super path, INTERVAL
         @path = path
-        @io = File.open(path)
-        @pos = 0
+        @io = File.open(path, File::NONBLOCK | File::TRUNC)
         @receive_lines = receive_lines
+        @partial = ""
       end
 
       def on_change(prev, cur)
-        return if cur.size < @pos
-
-        buffer = @io.read(cur.size - @pos)
-        @pos = cur.size
-        lines = []
-        while line = buffer.slice!(/.*?\n/m)
-          lines << line.chomp
-        end
+        buffer = @io.read_nonblock(65536)
+        lines = buffer.split("\n").map(&:chomp)
+        return if lines.empty?
+        lines[0] = @partial + lines.first unless @partial.empty?
+        @partial = buffer.end_with?("\n") ? "" : lines.pop
         @receive_lines.call(lines)
+      rescue IO::WaitReadable
+        # will be readable on next event
       end
     end
 
-    class TimerWatcher < Coolio::TimerWatcher
+    class TimerWatcher < Cool.io::TimerWatcher
       def initialize(interval, repeat, &check_dstat)
         @check_dstat = check_dstat
         super(interval, repeat)
