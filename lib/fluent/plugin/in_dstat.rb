@@ -168,19 +168,5 @@ module Fluent::Plugin
         # will be readable on next event
       end
     end
-
-    class TimerWatcher < Cool.io::TimerWatcher
-      def initialize(interval, repeat, &check_dstat)
-        @check_dstat = check_dstat
-        super(interval, repeat)
-      end
-
-      def on_timer
-        @check_dstat.call
-      rescue
-        log.error $!.to_s
-        log.error_backtrace
-      end
-    end
   end
 end
