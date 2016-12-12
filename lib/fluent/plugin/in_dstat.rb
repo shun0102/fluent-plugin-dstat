@@ -1,9 +1,9 @@
-require 'fluent/input'
+require 'fluent/plugin/input'
 
-module Fluent
+module Fluent::Plugin
   class DstatInput < Input
 
-    Plugin.register_input('dstat', self)
+    Fluent::Plugin.register_input('dstat', self)
 
     def initialize
       super
@@ -148,7 +148,7 @@ module Fluent
             'hostname' => @hostname,
             'dstat' => data
           }
-          router.emit(@tag, Engine.now, record)
+          router.emit(@tag, Fluent::Engine.now, record)
         end
         @line_number += 1
         @last_time = Time.now

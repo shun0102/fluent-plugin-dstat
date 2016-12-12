@@ -20,7 +20,7 @@ class DstatInputTest < Test::Unit::TestCase
   ]
 
   def create_driver(conf=CONFIG)
-    Fluent::Test::InputTestDriver.new(Fluent::DstatInput).configure(conf)
+    Fluent::Test::Driver::Input.new(Fluent::Plugin::DstatInput).configure(conf)
   end
 
   def test_configure
@@ -44,19 +44,17 @@ class DstatInputTest < Test::Unit::TestCase
   def emit_with_conf(conf)
     d = create_driver(conf)
 
-    d.run do
-      sleep 2
-    end
+    d.run(expect_emits: 1)
 
     length = `dstat #{d.instance.option} #{d.instance.delay} 1`.split("\n")[0].split("\s").length
     puts `dstat #{d.instance.option} #{d.instance.delay} 3`
 
-    emits = d.emits
-    assert_equal true, emits.length > 0
-    assert_equal length, emits[0][2]['dstat'].length
+    events = d.events
+    assert_equal true, events.length > 0
+    assert_equal length, events[0][2]['dstat'].length
 
     puts "--- #{d.instance.option} ---"
-    puts emits[0][2]
+    puts events[0][2]
     puts "--- end ---"
   end
 
