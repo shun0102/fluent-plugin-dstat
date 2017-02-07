@@ -24,6 +24,10 @@ module Fluent
       end
     end
 
+    unless method_defined?(:log)
+      define_method("log") { $log }
+    end
+
     desc "the tag of event"
     config_param :tag, :string
     desc "dstat command path"
@@ -53,7 +57,7 @@ module Fluent
     def check_dstat
       now = Time.now
       if now - @last_time > @delay * 3
-        $log.info "Process dstat(#{@pid}) is stopped. Last updated: #{@last_time}"
+        log.info "Process dstat(#{@pid}) is stopped. Last updated: #{@last_time}"
         restart
       end
     end
@@ -84,8 +88,8 @@ module Fluent
       begin
         @loop.run
       rescue
-        $log.error "unexpected error", :error=>$!.to_s
-        $log.error_backtrace
+        log.error "unexpected error", :error=>$!.to_s
+        log.error_backtrace
       end
     end
 
@@ -94,8 +98,8 @@ module Fluent
       begin
         Process.kill(:TERM, @pid)
       rescue Errno::ESRCH => e
-        $log.error "unexpected death of a child process", :error=>e.to_s
-        $log.error_backtrace
+        log.error "unexpected death of a child process", :error=>e.to_s
+        log.error_backtrace
       end
       @dw.detach
       @tw.detach
@@ -185,8 +189,8 @@ module Fluent
       def on_timer
         @check_dstat.call
       rescue
-        $log.error $!.to_s
-        $log.error_backtrace
+        log.error $!.to_s
+        log.error_backtrace
       end
     end
   end
