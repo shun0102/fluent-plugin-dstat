@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
   s.summary = "Dstat Input plugin for Fluent event collector"
 
   s.add_runtime_dependency(%q<fluentd>, [">= 0.14.0", "< 2"])
-  s.add_runtime_dependency(%q<rdoc>, [">= 0"])
+  s.add_development_dependency(%q<rdoc>, [">= 0"])
   s.add_development_dependency(%q<test-unit>, [">= 3.0.0"])
   s.add_development_dependency(%q<bundler>, ["~> 1.0"])
   s.add_development_dependency(%q<rake>, ["~> 12.0"])
