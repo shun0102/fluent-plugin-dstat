@@ -52,7 +52,7 @@ module Fluent::Plugin
       begin
         `#{@dstat_path} --version`
       rescue Errno::ENOENT
-        raise ConfigError, "'#{@dstat_path}' command not found. Install dstat before run fluentd"
+        raise Fluent::ConfigError, "'#{@dstat_path}' command not found. Install dstat before run fluentd"
       end
     end
 
