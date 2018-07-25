@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency(%q<fluentd>, [">= 0.14.0", "< 2"])
   s.add_runtime_dependency(%q<rdoc>, [">= 0"])
-  s.add_dependency(%q<test-unit>, [">= 3.0.0"])
-  s.add_dependency(%q<bundler>, ["~> 1.0"])
-  s.add_dependency(%q<rake>, ["~> 12.0"])
+  s.add_development_dependency(%q<test-unit>, [">= 3.0.0"])
+  s.add_development_dependency(%q<bundler>, ["~> 1.0"])
+  s.add_development_dependency(%q<rake>, ["~> 12.0"])
 end
